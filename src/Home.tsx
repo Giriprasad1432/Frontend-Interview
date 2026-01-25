@@ -2,6 +2,8 @@ import { Button } from "./components/ui/button";
 import { Card, CardHeader, CardDescription } from "./components/ui/card";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import Navbar from "./Navbar";
+import { motion,useScroll } from "motion/react"
 
 interface Blog{
     id:number,
@@ -49,8 +51,7 @@ const TimeAgo=(dateString:string)=>{
 
 const Home=()=>{
     const [selected,setSelected]=useState("");
-
-
+    const { scrollYProgress } = useScroll()
     const fetchBlogs=async ()=>{
         const res=await fetch("http://localhost:3001/blogs");
         if(!res.ok){
@@ -65,18 +66,23 @@ const Home=()=>{
     });
 
     if(isLoading){
-        return <div>Loading...</div>
+        return (<div className="text-center text-4xl">Loading...</div>)
     }
     if(isError){
         return <div>Error: {error.message}</div>
     }
     
     return(
+        <div>
+            <Navbar/>
+            <h1 className="text-4xl font-bold text-center mt-10 mb-3">Welcome to CA MONK Blogs</h1>
+            <p className="font-medium text-center mb-20 ">Stay tuned</p>
        <div className="flex bg-gray-100 ">
             <div className=" w-[30%] p-5 flex flex-col ">
+                <h1 className="mb-2 font-bold text-2xl">Latest Blogs</h1>
                 {data.map((blog:any)=>(
                     <Card onClick={()=>setSelected(blog.id)} key={blog.id}
-                     className={`${selected===blog.id ? "border-purple-500 border-l-4  bg-purple-50":""} focus:scale-90 mb-4 hover:bg-purple-50 relative cursor-pointer shadow hover:border-purple-400 hover:border-l-4 hover:border-l-violet-500 hover:shadow-lg transition-all ease-in-out duration-120 p-4`}
+                     className={`${selected===blog.id ? "border-purple-500 border-l-5  bg-purple-50":""} focus:scale-90 mb-4 bg-white hover:bg-purple-50 relative cursor-pointer shadow hover:border-purple-400 hover:border-l-5 hover:border-l-violet-500 hover:shadow-lg transition-all ease-in-out duration-120 p-4`}
                         >
                         <div className="flex flex-col">
                         <CardHeader className="text-center text-lg font-bold mt-5">{blog.title}</CardHeader>
@@ -86,25 +92,27 @@ const Home=()=>{
                         <p className="absolute left-2 top-3 text-gray-500 text-xs ">{blog.category}</p>
                     </Card>
                 ))}
+
             </div>
-            
                 {selected ? (
-                    <div className="rounded-2xl w-[70%] mt-20 border-1 mx-10 bg-white border-gray-300 flex flex-col gap-3">
-                        <img className="object-contain w-full mb-5 rounded-t-2xl " src={data.find((blog:any)=>blog.id===selected).coverImage} alt={data.find((blog:any)=>blog.id===selected).title}/>
+                    <div className=" rounded-2xl w-full mt-20 border-1 mx-10 bg-white border-gray-300 flex flex-col gap-3 h-full">
+                        <img className="object-cover h-130 w-full mb-5 rounded-t-2xl " src={data.find((blog:any)=>blog.id===selected).coverImage} alt={data.find((blog:any)=>blog.id===selected).title}/>
                         <h1 className="px-10 text-4xl font-bold mb-5">{data.find((blog:any)=>blog.id===selected).title}</h1>
                         <div className="flex justify-between">
                             <p className="px-10 font-bold">{data.find((blog:any)=>blog.id===selected).category}</p>
                             <p className="px-10 text-gray-700 text-md mb-5">{TimeAgo(data.find((blog:any)=>blog.id===selected).date)}</p>
                         </div>
+                        <div className="border-1"></div>
                         <p className="px-10 mt-2 text-black font-semibold text-lg mb-2">{data.find((blog:any)=>blog.id===selected).description}</p>
-                        <p className="text-gray-700 leading-relaxed px-15 text-xl">{data.find((blog:any)=>blog.id===selected).content}</p>
+                        <p className="text-gray-700 leading-relaxed px-15 text-xl mb-50">{data.find((blog:any)=>blog.id===selected).content}</p>
                     </div>
                 ):
                 (
-                    <div className="flex items-center justify-center ">
-                        <p className="text-gray-500 text-xl">Select a blog to read</p>
+                    <div className="w-full text-center mt-40">
+                        <h1 className="text-gray-500 text-4xl px-80">Select a blog to read</h1>
                     </div>
                 )}
+            </div>
             </div>
     )
 }
