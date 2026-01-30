@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Navbar from "./Navbar";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+// import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface Blog {
     title: string;
@@ -68,7 +68,8 @@ const Create = () => {
             setErrors(newErrors);
             return;
         } else {
-            setBlogdata({...blogdata,date: new Date().toISOString()})
+            blogdata.date=new Date().toISOString();
+            setBlogdata({...blogdata})
             addBlog(blogdata);
             alert("Blog Created successfully");
             setisLoading(true);

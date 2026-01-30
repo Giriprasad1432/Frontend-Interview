@@ -3,7 +3,7 @@ import { Card, CardHeader, CardDescription } from "./components/ui/card";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Navbar from "./Navbar";
-import { motion,useScroll } from "motion/react"
+import {motion} from "framer-motion"
 
 interface Blog{
     id:number,
@@ -44,14 +44,9 @@ const TimeAgo=(dateString:string)=>{
 
     return diffTime;
 }
-
-
-
-
-
 const Home=()=>{
+    const title="Welcome to BLOG PAGE"
     const [selected,setSelected]=useState("");
-    const { scrollYProgress } = useScroll()
     const fetchBlogs=async ()=>{
         const res=await fetch("http://localhost:3001/blogs");
         if(!res.ok){
@@ -75,14 +70,22 @@ const Home=()=>{
     return(
         <div>
             <Navbar/>
-            <h1 className="text-4xl font-bold text-center mt-10 mb-3">Welcome to CA MONK Blogs</h1>
-            <p className="font-medium text-center mb-20 ">Stay tuned</p>
+            <motion.div initial={{y:50}} animate={{y:0}} transition={{duration:0.4 ,type:"spring"}} className="whitespace-pre text-4xl justify-center flex font-bold text-center mt-10 mb-3">
+                {[...title].map((a)=>(  <motion.div whileHover={{y:-10}}>{a}</motion.div>))}
+                </motion.div>
+            <motion.div initial={{y:50}} animate={{y:0}} transition={{duration:0.5,delay:0.1,type:"spring"}} className="font-medium text-center mb-20 ">Stay tuned</motion.div>
        <div className="flex bg-gray-100 ">
             <div className=" w-[30%] p-5 flex flex-col ">
                 <h1 className="mb-2 font-bold text-2xl">Latest Blogs</h1>
                 {data.map((blog:any)=>(
+                    <motion.div 
+                    key={blog.id}
+                    initial={{x:0}}
+                    whileHover={{x:50}}
+                    transition={{type:"spring",duration:0.5}}
+                    >
                     <Card onClick={()=>setSelected(blog.id)} key={blog.id}
-                     className={`${selected===blog.id ? "border-purple-500 border-l-5  bg-purple-50":""} focus:scale-90 mb-4 bg-white hover:bg-purple-50 relative cursor-pointer shadow hover:border-purple-400 hover:border-l-5 hover:border-l-violet-500 hover:shadow-lg transition-all ease-in-out duration-120 p-4`}
+                     className={`${selected===blog.id ? "border-purple-500  bg-purple-50":""} focus:scale-90 mb-4 bg-white hover:bg-purple-50 relative cursor-pointer shadow hover:border-purple-400 hover:shadow-lg transition-all ease-in-out duration-120 p-4`}
                         >
                         <div className="flex flex-col">
                         <CardHeader className="text-center text-lg font-bold mt-5">{blog.title}</CardHeader>
@@ -91,6 +94,7 @@ const Home=()=>{
                         <p className="absolute right-2 top-3 text-xs text-gray-400">{TimeAgo(blog.date)}</p>
                         <p className="absolute left-2 top-3 text-gray-500 text-xs ">{blog.category}</p>
                     </Card>
+                    </motion.div>
                 ))}
 
             </div>
