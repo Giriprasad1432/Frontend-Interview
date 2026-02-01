@@ -97,7 +97,7 @@ const Create = () => {
 
     return (
         <div>
-            <Navbar />
+            <Navbar  />
             <div className="flex flex-col justify-center items-center gap-10 bg-gray-100">
                 <h1 className="text-4xl font-bold text-center mt-10">Create Blog Page</h1>
                 <p className="text-gray-600">this is where you have to create blogs</p>
