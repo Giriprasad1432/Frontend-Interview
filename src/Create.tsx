@@ -137,8 +137,8 @@ const Create = () => {
                         <textarea onChange={handleChange} value={blogdata.content} placeholder="Enter content" name="content" className={`${(isdark)?"border-zinc-800":"border-gray-200"} border-2 rounded-lg p-3 text-lg h-40 resize-none`} />
                     </div>
 
-                    <button type="submit" className="bg-purple-600 text-white rounded-lg p-3 text-lg hover:bg-purple-700 transition-colors">
-                        {isLoading ? "Creating..." : "Create Blog"}
+                    <button type="submit" className="bg-purple-600 text-white rounded-lg p-3 text-lg hover:bg-purple-700 transition-colors flex justify-center items-center">
+                        {isLoading ? <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-purple-500"></div> : "Create Blog"}
                     </button>
                 </form>
             </div>

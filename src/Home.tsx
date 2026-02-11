@@ -1,6 +1,6 @@
 import { Button } from "./components/ui/button";
 import { Card, CardHeader, CardDescription } from "./components/ui/card";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Navbar from "./Navbar";
 import { motion } from "framer-motion"
@@ -16,40 +16,35 @@ interface Blog {
     content: string
 }
 
-const TimeAgo = (dateString: string) => {
-    const pastDate = new Date(dateString);
-    const now = new Date();
-    const diffsec = Math.floor((now.getTime() - pastDate.getTime()) / 1000);
-    let diffmin = Math.floor(diffsec / 60);
-    let diffhour = Math.floor(diffmin / 60);
-    let diffday = Math.floor(diffhour / 24);
-    let diffweek = Math.floor(diffday / 7);
-    let diffmonth = Math.floor(diffday / 30);
-    let diffyear = Math.floor(diffday / 365);
-    let diffTime: string = "";
-    if (diffyear > 0) {
-        diffTime = `${diffyear} year${diffyear > 1 ? "s" : ""} ago`;
-    } else if (diffmonth > 0) {
-        diffTime = `${diffmonth} month${diffmonth > 1 ? "s" : ""} ago`;
-    } else if (diffweek > 0) {
-        diffTime = `${diffweek} week${diffweek > 1 ? "s" : ""} ago`;
-    } else if (diffday > 0) {
-        diffTime = `${diffday} day${diffday > 1 ? "s" : ""} ago`;
-    } else if (diffhour > 0) {
-        diffTime = `${diffhour} hour${diffhour > 1 ? "s" : ""} ago`;
-    } else if (diffmin > 0) {
-        diffTime = `${diffmin} minute${diffmin > 1 ? "s" : ""} ago`;
-    } else {
-        diffTime = `${diffsec} second${diffsec > 1 ? "s" : ""} ago`;
+export const TimeAgo = (dateString: string) => {
+    const past = new Date(dateString).getTime();
+    const now = Date.now();
+    const diff = Math.floor((now - past) / 1000);
+
+    const units = [
+        { label: "year", value: 365 * 24 * 60 * 60 },
+        { label: "month", value: 30 * 24 * 60 * 60 },
+        { label: "week", value: 7 * 24 * 60 * 60 },
+        { label: "day", value: 24 * 60 * 60 },
+        { label: "hour", value: 60 * 60 },
+        { label: "minute", value: 60 },
+        { label: "second", value: 1 },
+    ];
+
+    for (const unit of units) {
+        const amount = Math.floor(diff / unit.value);
+        if (amount > 0) {
+            return `${amount} ${unit.label}${amount > 1 ? "s" : ""} ago`;
+        }
     }
 
-    return diffTime;
-}
+    return "Just now";
+};
 const Home = () => {
     const { isdark, setIsdark } = useTheme();
     const [pos, setPos] = useState({ x: 0, y: 0 })
     const title = "Welcome to BLOG PAGE"
-    const [selected, setSelected] = useState("");
+    const [selected, setSelected] = useState<number | null>(null);
     const fetchBlogs = async () => {
         const res = await fetch("http://localhost:3001/blogs");
         if (!res.ok) {
@@ -63,8 +58,18 @@ const Home = () => {
         queryFn: fetchBlogs,
     });
 
+    const sortedBlogs = useMemo(() => {
+        return [...data].sort(
+            (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        ).slice(0,7);
+    }, [data]);
+
+    const selectedBlog = data.find((blog: Blog) => blog.id === selected);
+
     if (isLoading) {
-        return (<div className="text-center text-4xl">Loading...</div>)
+        return (<div className="flex justify-center items-center h-screen">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-purple-500"></div>
+        </div>)
     }
     if (isError) {
         return <div>Error: {error.message}</div>
@@ -89,39 +94,40 @@ const Home = () => {
             <div className={`flex ${(isdark) ? "bg-zinc-900 border-t-zinc-700" : "bg-gray-100"}`}>
                 <div className=" w-[30%] p-5 flex flex-col ">
                     <h1 className={`${(isdark) ? "text-white" : ""} mb-2 font-bold text-2xl`}>Latest Blogs</h1>
-                    {[...data]
-                        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).map((blog: any) => (
-                            <motion.div
-                                key={blog.id}
-                                initial={{ x: 0 }}
-                                whileHover={{ x: 50 }}
-                                transition={{ type: "spring", duration: 0.5 }}
+                    {sortedBlogs.map((blog: any) => (
+                        <motion.div
+                            key={blog.id}
+                            initial={{ x: 0 }}
+                            whileHover={{ x: 50 }}
+                            transition={{ type: "spring", duration: 0.5 }}
+                        >
+                            <Card onClick={() => setSelected(blog.id)} key={blog.id}
+                                className={`${selected === blog.id ? "border-purple-500 border-2 bg-purple-50" : ""} ${(isdark) ? "bg-black  text-white hover:bg-zinc-700" : "bg-white hover:bg-purple-50"} focus:scale-90 mb-4  relative cursor-pointer shadow hover:border-purple-400 hover:shadow-lg transition-all ease-in-out duration-120 p-4`}
                             >
-                                <Card onClick={() => setSelected(blog.id)} key={blog.id}
-                                    className={`${selected === blog.id ? "border-purple-500 border-2 bg-purple-50" : ""} ${(isdark) ? "bg-black text-white hover:bg-zinc-700" : "bg-white hover:bg-purple-50"} focus:scale-90 mb-4  relative cursor-pointer shadow hover:border-purple-400 hover:shadow-lg transition-all ease-in-out duration-120 p-4`}
-                                >
-                                    <div className="flex flex-col">
-                                        <CardHeader className="text-center text-lg font-bold mt-5">{blog.title}</CardHeader>
-                                        <CardDescription className="text-sm text-center" >{blog.description}</CardDescription>
-                                    </div>
-                                    <p className="absolute right-2 top-3 text-xs text-gray-400">{TimeAgo(blog.date)}</p>
-                                    <p className="absolute left-2 top-3 text-gray-500 text-xs ">{blog.category}</p>
-                                </Card>
-                            </motion.div>
-                        ))}
+                                <div className="flex flex-col">
+                                    <CardHeader className="text-center text-lg font-bold mt-5">{blog.title}</CardHeader>
+                                    <CardDescription className="text-sm text-center" >{blog.description}</CardDescription>
+                                </div>
+                                <p className="absolute right-2 top-3 text-xs text-gray-400">{TimeAgo(blog.date)}</p>
+                                <p className="absolute left-2 top-3 text-gray-500 text-xs ">{blog.category}</p>
+                            </Card>
+                        </motion.div>
+                    ))}
 
                 </div>
-                {selected ? (
+                {selected && selectedBlog ? (
                     <div className={`rounded-2xl w-full mt-20 border-1 mx-10 ${(isdark) ? "border-zinc-500 text-zinc-400 bg-zinc-800" : "bg-white border-gray-300"} flex flex-col gap-3 h-full`}>
-                        <img className="object-cover h-130 w-full mb-5 rounded-t-2xl " src={data.find((blog: any) => blog.id === selected).coverImage} alt={data.find((blog: any) => blog.id === selected).title} />
-                        <h1 className="px-10 text-4xl font-bold mb-5">{data.find((blog: any) => blog.id === selected).title}</h1>
+                        <img className="object-cover h-130 w-full mb-5 rounded-t-2xl " onError={(e) => {
+                            e.currentTarget.src = "default.avif";
+                        }} src={selectedBlog.coverImage} alt={selectedBlog.title} />
+                        <h1 className="px-10 text-4xl font-bold mb-5">{selectedBlog.title}</h1>
                         <div className="flex justify-between">
-                            <p className="px-10 font-bold">{data.find((blog: any) => blog.id === selected).category}</p>
-                            <p className={`px-10 ${(isdark) ? " text-zinc-400" : "text-gray-700"} text-md mb-5`}>{TimeAgo(data.find((blog: any) => blog.id === selected).date)}</p>
+                            <p className="px-10 font-bold">{selectedBlog.category}</p>
+                            <p className={`px-10 ${(isdark) ? " text-zinc-400" : "text-gray-700"} text-md mb-5`}>{TimeAgo(selectedBlog.date)}</p>
                         </div>
                         <div className="border-1 border-zinc-600"></div>
-                        <p className={` px-10 mt-2 ${(isdark) ? "text-zinc-400" : "text-black"} font-semibold text-lg mb-2`}>{data.find((blog: any) => blog.id === selected).description}</p>
-                        <p className={`${(isdark) ? "text-gray-300" : "text-gray-700"} leading-relaxed px-15 text-xl mb-50`}>{data.find((blog: any) => blog.id === selected).content}</p>
+                        <p className={` px-10 mt-2 ${(isdark) ? "text-zinc-400" : "text-black"} font-semibold text-lg mb-2`}>{selectedBlog.description}</p>
+                        <p className={`${(isdark) ? "text-gray-300" : "text-gray-700"} leading-relaxed px-15 text-xl mb-50`}>{selectedBlog.content}</p>
                     </div>
                 ) :
                     (

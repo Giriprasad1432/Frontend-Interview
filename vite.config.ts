@@ -3,14 +3,13 @@ import react from '@vitejs/plugin-react-swc'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react(),tailwindcss(),],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'), // Alias "@" to the "src" directory
-      '@components': path.resolve(__dirname, './src/components'), // Example alias for components
-      // Add more aliases as needed
+      '@': path.resolve(__dirname, './src'), 
+      '@components': path.resolve(__dirname, './src/components'), 
+      
     },
   },
 })
