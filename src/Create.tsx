@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Navbar from "./Navbar";
+import {useTheme} from "./ThemeContext.tsx"
 // import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface Blog {
@@ -12,6 +13,7 @@ interface Blog {
 }
 
 const Create = () => {
+    const {isdark,setIsdark}=useTheme();
     const [success, setSuccess] = useState(false);
     const [isLoading, setisLoading] = useState(false);
     const [errors, setErrors] = useState({
@@ -71,10 +73,10 @@ const Create = () => {
             blogdata.date=new Date().toISOString();
             setBlogdata({...blogdata})
             addBlog(blogdata);
-            alert("Blog Created successfully");
             setisLoading(true);
             setTimeout(() => {
                 setisLoading(false);
+                alert("Blog Created successfully");
                 setErrors({
                     title: "",
                     category: "",
@@ -96,43 +98,43 @@ const Create = () => {
     }
 
     return (
-        <div>
+        <div className={`${(isdark) ? "bg-zinc-950 text-white" : "bg-gray-100"}`}>
             <Navbar  />
-            <div className="flex flex-col justify-center items-center gap-10 bg-gray-100">
-                <h1 className="text-4xl font-bold text-center mt-10">Create Blog Page</h1>
-                <p className="text-gray-600">this is where you have to create blogs</p>
+            <div className={`flex flex-col justify-center items-center gap-10 ${(isdark) ? "bg-zinc-950 text-white" : "bg-gray-100"}`}>
+                <h1 className="text-4xl font-bold text-center mt-10">Create a blog</h1>
+                <p className="text-gray-600">Share your ideas, stories, or updates with the world.</p>
 
-                <form onSubmit={handleSubmit} className="flex flex-col gap-5 md:w-[60vw] border-1 border-gray-200 rounded-2xl p-10 bg-white shadow mb-20 hover:shadow-xl transition-shadow">
-                    <p className="text-center font-bold text-2xl text-gray-600">Blog Form</p>
+                <form onSubmit={handleSubmit} className={`${(isdark) ? "bg-zinc-900 border-zinc-500": "bg-white border-gray-200"} flex flex-col gap-5 md:w-[60vw] border-1 rounded-2xl p-10 shadow mb-20 hover:shadow-xl transition-shadow`}>
+                    <p className={`text-center font-bold text-3xl ${(isdark) ? "text-zinc-300" : "text-gray-600"}`}>Blog Form</p>
 
                     <div className="flex flex-col gap-2">
                         <p className="text-xl font-semibold font-mono text-gray-600">Title:</p>
                         {errors.title && <p className="text-red-500 text-sm">{errors.title}</p>}
-                        <input onChange={handleChange} value={blogdata.title} type="text" name="title" placeholder="Enter title" className="border-2 border-gray-200 rounded-lg p-3 text-lg" />
+                        <input onChange={handleChange} value={blogdata.title} type="text" name="title" placeholder="Enter title" className={`${(isdark)? "border-zinc-800" : "border-gray-200" } border-2 rounded-lg p-3 text-lg`} />
                     </div>
 
                     <div>
                         <p className="text-xl font-semibold font-mono text-gray-600">Category:</p>
                         {errors.category && <p className="text-red-500 text-sm">{errors.category}</p>}
-                        <input onChange={handleChange} value={blogdata.category} type="text" name="category" placeholder="Enter category" className="border-2 border-gray-200 rounded-lg p-3 text-lg w-full" />
+                        <input onChange={handleChange} value={blogdata.category} type="text" name="category" placeholder="Enter category" className={`${(isdark)? "border-zinc-800" : "border-gray-200" } border-2 rounded-lg p-3 text-lg w-full`} />
                     </div>
 
                     <div className="flex flex-col gap-2">
                         <p className="text-xl font-semibold font-mono text-gray-600">Description:</p>
                         {errors.description && <p className="text-red-500 text-sm">{errors.description}</p>}
-                        <input onChange={handleChange} value={blogdata.description} type="text" name="description" placeholder="Enter description" className="border-2 border-gray-200 rounded-lg p-3 text-lg" />
+                        <input onChange={handleChange} value={blogdata.description} type="text" name="description" placeholder="Enter description" className={`${(isdark)? "border-zinc-800" : "border-gray-200" } border-2 rounded-lg p-3 text-lg w-full`} />
                     </div>
 
                     <div>
                         <p className="text-xl font-semibold font-mono text-gray-600">Cover Image URL:</p>
                         {errors.coverImage && <p className="text-red-500 text-sm">{errors.coverImage}</p>}
-                        <input onChange={handleChange} value={blogdata.coverImage} type="text" name="coverImage" placeholder="Enter cover image URL" className="border-2 border-gray-200 rounded-lg p-3 text-lg w-full" />
+                        <input onChange={handleChange} value={blogdata.coverImage} type="text" name="coverImage" placeholder="Enter cover image URL" className={`${(isdark)? "border-zinc-800" : "border-gray-200" } border-2 rounded-lg p-3 text-lg w-full`} />
                     </div>
 
                     <div className="flex flex-col gap-2">
                         <p className="text-xl font-semibold font-mono text-gray-600">Content(in 500 words):</p>
                         {errors.content && <p className="text-red-500 text-sm">{errors.content}</p>}
-                        <textarea onChange={handleChange} value={blogdata.content} placeholder="Enter content" name="content" className="border-2 border-gray-200 rounded-lg p-3 text-lg h-40 resize-none" />
+                        <textarea onChange={handleChange} value={blogdata.content} placeholder="Enter content" name="content" className={`${(isdark)?"border-zinc-800":"border-gray-200"} border-2 rounded-lg p-3 text-lg h-40 resize-none`} />
                     </div>
 
                     <button type="submit" className="bg-purple-600 text-white rounded-lg p-3 text-lg hover:bg-purple-700 transition-colors">
