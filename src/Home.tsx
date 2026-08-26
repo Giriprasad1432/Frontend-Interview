@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import Navbar from "./Navbar";
 import { motion } from "framer-motion"
 import { useTheme } from "./ThemeContext.tsx"
+import { getBlogsUrl } from "./lib/api"
 
 interface Blog {
     id: number,
@@ -46,7 +47,7 @@ const Home = () => {
     const title = "Welcome to BLOG PAGE"
     const [selected, setSelected] = useState<number | null>(null);
     const fetchBlogs = async () => {
-        const res = await fetch("http://localhost:3001/blogs");
+        const res = await fetch(getBlogsUrl());
         if (!res.ok) {
             throw new Error("Network response was not ok");
         }

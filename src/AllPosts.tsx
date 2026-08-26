@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { getBlogsUrl } from "./lib/api";
 import { CardHeader, CardDescription } from "./components/ui/card";
 import { TimeAgo } from "./Home";
 import { Link } from "react-router-dom";
@@ -69,7 +70,7 @@ const AllPosts = () => {
   const { isdark } = useTheme();
 
   const fetchBlogs = async () => {
-    const res = await fetch("http://localhost:3001/blogs");
+    const res = await fetch(getBlogsUrl());
     if (!res.ok) throw new Error("Network response was not ok");
     return res.json();
   };

@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { getBlogsUrl } from "./lib/api";
 import { useState } from "react"
 import { ArrowLeft, ArrowRight} from 'lucide-react';
 import { motion,AnimatePresence } from "framer-motion"
@@ -23,7 +24,7 @@ const Blogview = ({...props}) => {
     };
     
     const fetchBlogs = async () => {
-        const res = await fetch("http://localhost:3001/blogs");
+        const res = await fetch(getBlogsUrl());
         if (!res.ok) {
             throw new Error("Network response was not ok");
         }

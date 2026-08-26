@@ -19,7 +19,7 @@ function App() {
         <Route path='/create' element={<Create/>}/>
         <Route path='/all-posts' element={<AllPosts/>}/>
         <Route path='/blog/:id' element={<BlogDetail/>}/>  
-        {/* <Route path='/blogview' element={<Blogview show={show} setShow={setShow}/>}/> */}
+        <Route path='/blogview' element={<Blogview show={show} setShow={setShow}/>}/>
       </Routes>
     </QueryClientProvider>
   )
