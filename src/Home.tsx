@@ -1,4 +1,3 @@
-import { Button } from "./components/ui/button";
 import { Card, CardHeader, CardDescription } from "./components/ui/card";
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -42,7 +41,7 @@ export const TimeAgo = (dateString: string) => {
     return "Just now";
 };
 const Home = () => {
-    const { isdark, setIsdark } = useTheme();
+    const { isdark } = useTheme();
     const [pos, setPos] = useState({ x: 0, y: 0 })
     const title = "Welcome to BLOG PAGE"
     const [selected, setSelected] = useState<number | null>(null);
@@ -117,7 +116,7 @@ const Home = () => {
 
                 </div>
                 {selected && selectedBlog ? (
-                    <div className={`rounded-2xl w-full mt-20 border-1 mx-10 ${(isdark) ? "border-zinc-500 text-zinc-400 bg-zinc-800" : "bg-white border-gray-300"} flex flex-col gap-3 h-full`}>
+                    <div className={`rounded-2xl w-full mt-20 border mx-10 ${(isdark) ? "border-zinc-500 text-zinc-400 bg-zinc-800" : "bg-white border-gray-300"} flex flex-col gap-3 h-full`}>
                         <img className="object-cover h-130 w-full mb-5 rounded-t-2xl " onError={(e) => {
                             e.currentTarget.src = "default.avif";
                         }} src={selectedBlog.coverImage} alt={selectedBlog.title} />
@@ -126,7 +125,7 @@ const Home = () => {
                             <p className="px-10 font-bold">{selectedBlog.category}</p>
                             <p className={`px-10 ${(isdark) ? " text-zinc-400" : "text-gray-700"} text-md mb-5`}>{TimeAgo(selectedBlog.date)}</p>
                         </div>
-                        <div className="border-1 border-zinc-600"></div>
+                        <div className="border border-zinc-600"></div>
                         <p className={` px-10 mt-2 ${(isdark) ? "text-zinc-400" : "text-black"} font-semibold text-lg mb-2`}>{selectedBlog.description}</p>
                         <p className={`${(isdark) ? "text-gray-300" : "text-gray-700"} leading-relaxed px-15 text-xl mb-50`}>{selectedBlog.content}</p>
                     </div>

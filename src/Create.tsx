@@ -13,8 +13,7 @@ interface Blog {
 }
 
 const Create = () => {
-    const {isdark,setIsdark}=useTheme();
-    const [success, setSuccess] = useState(false);
+    const {isdark}=useTheme();
     const [isLoading, setisLoading] = useState(false);
     const [errors, setErrors] = useState({
         title: "",
@@ -104,7 +103,7 @@ const Create = () => {
                 <h1 className="text-4xl font-bold text-center mt-10">Create a blog</h1>
                 <p className="text-gray-600">Share your ideas, stories, or updates with the world.</p>
 
-                <form onSubmit={handleSubmit} className={`${(isdark) ? "bg-zinc-900 border-zinc-500": "bg-white border-gray-200"} flex flex-col gap-5 md:w-[60vw] border-1 rounded-2xl p-10 shadow mb-20 hover:shadow-xl transition-shadow`}>
+                <form onSubmit={handleSubmit} className={`${(isdark) ? "bg-zinc-900 border-zinc-500": "bg-white border-gray-200"} flex flex-col gap-5 md:w-[60vw] border rounded-2xl p-10 shadow mb-20 hover:shadow-xl transition-shadow`}>
                     <p className={`text-center font-bold text-3xl ${(isdark) ? "text-zinc-300" : "text-gray-600"}`}>Blog Form</p>
 
                     <div className="flex flex-col gap-2">

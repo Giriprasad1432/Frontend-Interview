@@ -1,18 +1,13 @@
-import { number } from "framer-motion";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion"
 import { Sun, Moon } from "lucide-react";
-import { useContext, useState } from "react"
 import { useTheme } from "./ThemeContext.tsx"
 
-interface pos {
-    x: number;
-    y: number;
-}
+// (no local position type needed)
 const Navbar = () => {
     const { isdark, setIsdark } = useTheme();
     return (
-        <motion.div className={`w-full h-16 ${(isdark) ? "bg-zinc-900 border-b-1 border-b-zinc-700" : "bg-white"} shadow flex justify-between items-center sticky top-0 z-10`}
+        <motion.div className={`w-full h-16 ${(isdark) ? "bg-zinc-900 border-b border-b-zinc-700" : "bg-white"} shadow flex justify-between items-center sticky top-0 z-10`}
             initial={{ y: -100 }}
             animate={{ y: 0 }}
         >

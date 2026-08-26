@@ -6,11 +6,9 @@ import { Routes, Route } from "react-router-dom";
 import Create from './Create';
 import Blogview from "./blogview"
 import BlogDetail from './BlogDetail.tsx';
-import { createContext } from 'react';
 import AllPosts from './AllPosts.tsx';
 
 function App() {
-  const [count, setCount] = useState(0);
   const [show,setShow]=useState(false);
   return (
     <QueryClientProvider client={new QueryClient()}>
